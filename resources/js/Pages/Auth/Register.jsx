@@ -1,120 +1,93 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { useState } from "react";
+import { useForm } from "@inertiajs/react";
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+    const { data, setData, post, processing, errors } = useForm({
+        username: "",
+        password: "",
+        password_confirmation: "",
     });
 
     const submit = (e) => {
         e.preventDefault();
-
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
+        post(route("register"));
     };
 
     return (
-        <GuestLayout>
-            <Head title="Register" />
+        <div className="flex h-screen">
+            {/* Left Side (Visual) */}
+            <div 
+                className="w-1/2 flex items-center justify-center text-white text-4xl font-bold"
+                style={{ backgroundColor: "#1a1a2e" }} // Replace with your restaurant's main color
+            >
+                Join Our Restaurant 🍽️
+            </div>
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
+            {/* Right Side (Register Form) */}
+            <div className="w-1/2 flex items-center justify-center bg-black text-white">
+                <div className="w-full max-w-md p-6">
+                    <h2 className="text-3xl font-bold text-center mb-6">Sign Up</h2>
 
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
+                    <form onSubmit={submit}>
+                        {/* Username Field */}
+                        <div className="mb-4">
+                            <label className="block text-gray-400">Username</label>
+                            <input
+                                type="text"
+                                value={data.username}
+                                onChange={(e) => setData("username", e.target.value)}
+                                className="w-full p-2 bg-gray-800 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+                            />
+                            {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+                        </div>
 
-                    <InputError message={errors.name} className="mt-2" />
+                        {/* Password Field */}
+                        <div className="mb-4">
+                            <label className="block text-gray-400">Password</label>
+                            <input
+                                type="password"
+                                value={data.password}
+                                onChange={(e) => setData("password", e.target.value)}
+                                className="w-full p-2 bg-gray-800 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+                            />
+                            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                        </div>
+
+                        {/* Confirm Password Field */}
+                        <div className="mb-4">
+                            <label className="block text-gray-400">Confirm Password</label>
+                            <input
+                                type="password"
+                                value={data.password_confirmation}
+                                onChange={(e) => setData("password_confirmation", e.target.value)}
+                                className="w-full p-2 bg-gray-800 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+                            />
+                            {errors.password_confirmation && <p className="text-red-500 text-sm">{errors.password_confirmation}</p>}
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="flex gap-4">
+                            <button 
+                                type="submit" 
+                                className="flex-1 bg-yellow-500 text-black p-2 rounded-lg hover:bg-yellow-600 font-bold"
+                                disabled={processing}
+                            >
+                                Sign Up
+                            </button>
+                            <button 
+                                type="button"
+                                className="flex-1 border border-gray-500 text-gray-300 p-2 rounded-lg hover:bg-gray-700 font-bold"
+                            >
+                                Log In
+                            </button>
+                        </div>
+                    </form>
+
+                    <p className="text-center text-gray-400 mt-4 text-sm">
+                        © 2025 Your Restaurant. Privacy Policy
+                    </p>
                 </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                        required
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
+            </div>
+        </div>
     );
 }

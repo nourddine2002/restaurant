@@ -25,3 +25,36 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/admin', function () {
+    return Inertia('admin/AdminDashboard');
+});
+
+Route::get('/admin/orders', function () {
+    return Inertia('admin/Orders');
+})->name('admin.orders');
+
+Route::get('/admin/menu', function () {
+    return Inertia('admin/Menu');
+})->name('admin.menu');
+
+Route::get('/admin/users', function () {
+    return Inertia('admin/Users');
+})->name('admin.users');
+Route::get('/admin/tables', function () {
+    return Inertia('admin/Tables');
+})->name('admin.tables');
+
+Route::get('/admin/payments', function () {
+    return Inertia('admin/Payments');
+})->name('admin.payments');
+
+Route::get('/admin/reports', function () {
+    return Inertia('admin/Reports');
+})->name('admin.reports');
+
+Route::get('/waiter', fn() => Inertia('Waiter/WaiterDashboard'))->name('waiter.dashboard');
+Route::get('/waiter/orders', fn() => Inertia('Waiter/Orders'))->name('waiter.orders');
+Route::get('/waiter/new-order', fn() => Inertia('Waiter/NewOrder'))->name('waiter.new-order');
+Route::get('/waiter/completed-orders', fn() => Inertia('Waiter/OrderHistory'))->name('waiter.new-order');
+

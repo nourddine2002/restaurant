@@ -1,0 +1,21 @@
+import AdminLayout from '../../Layouts/AdminLayout';
+
+const Menu = () => {
+    return (
+        <AdminLayout>
+            <div className="p-6 ">
+                <h1 className="text-2xl font-bold mb-4 gap-6">Manage Menu</h1>
+                <p>Here you can edit and update the restaurant menu.</p>
+            </div>
+            <div>
+            <a href="/admin"
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                    ← Back to Dashboard
+                </a>
+            </div>
+
+        </AdminLayout>
+    );
+};
+
+export default Menu;
