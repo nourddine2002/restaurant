@@ -33,7 +33,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended('/admin');
+
     }
 
     /**
@@ -49,4 +50,8 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+    public function username()
+{
+    return 'username';
+}
 }

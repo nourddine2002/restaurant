@@ -1,5 +1,6 @@
 import AdminLayout from '../../Layouts/AdminLayout';
 import { Link } from '@inertiajs/react';
+import NavLink from '@/Components/NavLink';
 const AdminDashboard = () => {
     return (
         <AdminLayout>
@@ -15,7 +16,6 @@ const AdminDashboard = () => {
                         <p>View and manage restaurant orders.</p>
                         <Link href="/admin/orders" className="text-blue-500 hover:underline">Manage Orders</Link>
                     </div>
-                    
                     {/* Manage Users */}
                     <div className="p-4 bg-white shadow-md rounded-lg">
                         <div className="flex items-center mb-2">
