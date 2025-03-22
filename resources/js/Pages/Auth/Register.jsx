@@ -6,6 +6,7 @@ export default function Register() {
         username: "",
         password: "",
         password_confirmation: "",
+        role: "waiter", // Add default role value
     });
 
     const submit = (e) => {
@@ -64,7 +65,7 @@ export default function Register() {
                         </div>
 
                         {/* Confirm Password Field */}
-                        <div className="mb-6">
+                        <div className="mb-4">
                             <label className="block text-gray-400 mb-1">Confirm Password</label>
                             <input
                                 type="password"
@@ -74,6 +75,21 @@ export default function Register() {
                                 autoComplete="new-password"
                             />
                             {errors.password_confirmation && <p className="text-red-500 text-sm mt-1">{errors.password_confirmation}</p>}
+                        </div>
+
+                        {/* Role Field */}
+                        <div className="mb-6">
+                            <label className="block text-gray-400 mb-1">Role</label>
+                            <select 
+                                name="role"
+                                value={data.role} 
+                                onChange={(e) => setData("role", e.target.value)}
+                                className="w-full p-2 bg-gray-800 border border-gray-600 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+                            >
+                                <option value="waiter">Waiter</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role}</p>}
                         </div>
 
                         {/* Buttons */}

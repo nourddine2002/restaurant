@@ -16,13 +16,15 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'password' => 'required|min:6',
-            'role' => 'required'
+            'role' => 'required|string|in:admin,waiter',
         ]);
 
+        // $isFirstUser = User::where('role', 'admin')->count() == 0;
         $user = User::create([
             'name' => $request->name,
             'password' => Hash::make($request->password),
             'role' => $request->role
+            // 'role' => $isFirstUser ? 'admin' : 'waiter', // First user is admin, others are waiters
         ]);
 
         return response()->json($user, 201);
@@ -30,7 +32,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id) {
         $user = User::findOrFail($id);
-        $user->update($request->only(['name', 'email', 'role']));
+        $user->update($request->only(['username','role']));
 
         return response()->json($user);
     }

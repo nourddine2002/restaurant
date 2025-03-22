@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Log;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,8 +33,19 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        Log::info('User Logged In:', [
+            'user_id' => Auth::user()->id,
+            'username' => Auth::user()->username,
+            'role' => Auth::user()->role,
+        ]);
+    
+        if (Auth::user()->role === 'admin') {
+            return redirect()->intended('/admin');
+        } elseif (Auth::user()->role === 'waiter') {
+            return redirect()->intended('/waiter');
+        }
 
-        return redirect()->intended('/admin');
+        return redirect()->intended('/');
 
     }
 
