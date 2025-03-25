@@ -1,4 +1,5 @@
 import { Link } from "@inertiajs/react";
+import Dropdown from '@/Components/Dropdown';
 
 const WaiterLayout = ({ children }) => {
     return (
@@ -21,7 +22,25 @@ const WaiterLayout = ({ children }) => {
                 {/* Navbar */}
                 <header className="bg-white shadow p-4 flex justify-between items-center">
                     <h1 className="text-xl font-bold text-gray-800">Waiter Dashboard</h1>
-                    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Logout</button>
+                    <div className="relative">
+                                        <Dropdown>
+                                            <Dropdown.Trigger>
+                                                <button className="bg-white text-blue-600 font-semibold py-2 px-4 rounded">
+                                                    Waiter Menu ⬇
+                                                </button>
+                                            </Dropdown.Trigger>
+                                            <Dropdown.Content className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md">
+                                                <Dropdown.Link 
+                                                    href={route('logout')} 
+                                                    method="post" 
+                                                    as="button"
+                                                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                                                >
+                                                    Log Out
+                                                </Dropdown.Link>
+                                            </Dropdown.Content>
+                                        </Dropdown>
+                                    </div>
                 </header>
 
                 {/* Page Content */}

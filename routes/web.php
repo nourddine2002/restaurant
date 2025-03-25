@@ -1,10 +1,10 @@
 <?php
-
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CrtUsers;
 
 // Public routes
 Route::get('/', function () {
@@ -44,3 +44,11 @@ Route::middleware('auth')->group(function () {
 
 // Authentication routes (e.g., login, register, password reset)
 require __DIR__.'/auth.php';
+
+// API routes for user management (note the 'api/' prefix)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/api/users', [CrtUsers::class, 'index'])->name('admin.users.index');
+    Route::post('/api/users', [CrtUsers::class, 'store'])->name('admin.users.store');
+    Route::put('/api/users/{id}', [CrtUsers::class, 'update'])->name('admin.users.update');
+    Route::delete('/api/users/{id}', [CrtUsers::class, 'destroy'])->name('admin.users.destroy');
+});
