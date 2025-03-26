@@ -22,7 +22,12 @@
         "vite": "^6.0.11"
     },
     "dependencies": {
+<<<<<<< HEAD
         "react-icons": "^5.5.0",
         "react-router-dom": "^7.4.0"
+=======
+        "@inertiajs/inertia": "^0.11.1",
+        "@inertiajs/inertia-react": "^0.8.1"
+>>>>>>> 7fe8c569926bbb36d6b70074a7de952efc01eade
     }
 }

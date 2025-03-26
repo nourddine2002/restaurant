@@ -33,6 +33,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        
         Log::info('User Logged In:', [
             'user_id' => Auth::user()->id,
             'username' => Auth::user()->username,
