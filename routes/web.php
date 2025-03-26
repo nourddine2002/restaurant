@@ -4,9 +4,15 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\TableController;
+use App\Http\Controllers\MenuCategoryController;
+// use App\Http\Controllers\Auth\LoginController;
 
 // Public routes
+
+//Route::post('/login', [LoginController::class, 'login'])->name('login');
+
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -21,8 +27,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', fn() => Inertia::render('admin/AdminDashboard'))->name('dashboard');
     Route::get('/admin/orders', fn() => Inertia::render('admin/Orders'))->name('admin.orders');
     Route::get('/admin/menu', fn() => Inertia::render('admin/Menu'))->name('admin.menu');
+    Route::get('/menu-categories', [MenuCategoryController::class, 'index']);
+    Route::post('/menu-categories', [MenuCategoryController::class, 'store']);
     Route::get('/admin/users', fn() => Inertia::render('admin/Users'))->name('admin.users');
-    Route::get('/admin/tables', fn() => Inertia::render('admin/Tables'))->name('admin.tables');
+    Route::get('/admin/tables', [TableController::class, 'index'])->name('admin.tables');
+    Route::post('/admin/tables', [TableController::class, 'store'])->name('admin.tables.store');
+    Route::put('/admin/tables/{table}', [TableController::class, 'update'])->name('admin.tables.update');
+    Route::delete('/admin/tables/{table}', [TableController::class, 'destroy'])->name('admin.tables.destroy');
     Route::get('/admin/payments', fn() => Inertia::render('admin/Payments'))->name('admin.payments');
     Route::get('/admin/reports', fn() => Inertia::render('admin/Reports'))->name('admin.reports');
 });
