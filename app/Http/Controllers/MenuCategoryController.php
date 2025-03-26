@@ -12,7 +12,8 @@ class MenuCategoryController extends Controller
      */
     public function index()
     {
-        return response()->json(MenuCategory::all());
+        $categories = MenuCategory::all();
+        return response()->json($categories);
     }
 
     /**
@@ -20,48 +21,47 @@ class MenuCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $category = MenuCategory::create([
-            'name' => $request->name,
-        ]);
+        $category = MenuCategory::create($validated);
 
-        return response()->json(['message' => 'Menu category created successfully', 'data' => $category], 201);
+        return response()->json([
+            'message' => 'Menu category created successfully',
+            'data' => $category,
+        ], 201);
     }
-}
-
 
     /**
-     * Display the specified resource.
+     * Update an existing menu category.
      */
-//     public function show(MenuCategory $menuCategory)
-//     {
-//         //
-//     }
+    public function update(Request $request, $id)
+    {
+        $category = MenuCategory::findOrFail($id);
 
-//     /**
-//      * Show the form for editing the specified resource.
-//      */
-//     public function edit(MenuCategory $menuCategory)
-//     {
-//         //
-//     }
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
 
-//     /**
-//      * Update the specified resource in storage.
-//      */
-//     public function update(Request $request, MenuCategory $menuCategory)
-//     {
-//         //
-//     }
+        $category->update($validated);
 
-//     /**
-//      * Remove the specified resource from storage.
-//      */
-//     public function destroy(MenuCategory $menuCategory)
-//     {
-//         //
-//     }
-// }
+        return response()->json([
+            'message' => 'Menu category updated successfully',
+            'data' => $category,
+        ]);
+    }
+
+    /**
+     * Delete a menu category.
+     */
+    public function destroy($id)
+    {
+        $category = MenuCategory::findOrFail($id);
+        $category->delete();
+
+        return response()->json([
+            'message' => 'Menu category deleted successfully',
+        ]);
+    }
+}

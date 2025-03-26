@@ -1,37 +1,94 @@
 import AdminLayout from "../../Layouts/AdminLayout";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Inertia } from "@inertiajs/inertia"; // Inertia pour naviguer
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Menu = () => {
     const [name, setName] = useState("");
     const [categories, setCategories] = useState([]);
-    const navigate = useNavigate();
 
     // Fetch categories when component mounts
     useEffect(() => {
         fetch("/menu-categories")
-            .then((response) => response.json())
-            .then((data) => setCategories(data));
+            .then((response) => {
+                if (!response.ok) throw new Error("Failed to fetch categories");
+                return response.json();
+            })
+            .then((data) => setCategories(data))
+            .catch((error) => console.error(error));
     }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            const response = await fetch("/menu-categories", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({ name }),
+            });
 
-        const response = await fetch("/menu-categories", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify({ name }),
-        });
+            if (response.ok) {
+                const newCategory = await response.json();
+                setCategories([...categories, newCategory.data]);
+                setName("");
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || "Error adding menu category");
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert("An unexpected error occurred. Please try again.");
+        }
+    };
 
-        if (response.ok) {
-            const newCategory = await response.json();
-            setCategories([...categories, newCategory.data]); // Update UI
-            setName(""); // Reset input
-        } else {
-            alert("Error adding menu category");
+    const handleDelete = async (categoryId) => {
+        try {
+            const response = await fetch(`/menu-categories/${categoryId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                },
+            });
+
+            if (response.ok) {
+                setCategories(categories.filter(category => category.id !== categoryId));
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || "Error deleting menu category");
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert("An unexpected error occurred. Please try again.");
+        }
+    };
+
+    const handleEdit = async (categoryId, newName) => {
+        try {
+            const response = await fetch(`/menu-categories/${categoryId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({ name: newName }),
+            });
+
+            if (response.ok) {
+                const updatedCategory = await response.json();
+                setCategories(categories.map(category =>
+                    category.id === categoryId ? updatedCategory.data : category
+                ));
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || "Error updating menu category");
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert("An unexpected error occurred. Please try again.");
         }
     };
 
@@ -47,7 +104,6 @@ const Menu = () => {
                 </a>
             </div>
 
-            {/* Form to add a category */}
             <div className="flex items-center space-x-2 mb-4">
                 <input
                     type="text"
@@ -65,17 +121,36 @@ const Menu = () => {
                 </button>
             </div>
 
-            {/* Display categories as buttons */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {categories.length > 0 ? (
                     categories.map((category) => (
-                        <button
-                            key={category.id}
-                            onClick={() => navigate(`/menu/${category.id}`)}
-                            className="bg-gray-100 shadow-md p-6 rounded-lg flex items-center justify-center text-lg font-bold hover:bg-gray-200 transition"
-                        >
-                            {category.name}
-                        </button>
+                        <div key={category.id} className="flex items-center justify-between bg-gray-100 shadow-md p-6 rounded-lg">
+                            <button
+                                onClick={() => Inertia.visit(`/menu/${category.id}/items`)}
+                                className="text-lg font-bold hover:bg-gray-200 transition"
+                            >
+                                {category.name}
+                            </button>
+
+                            <div className="flex space-x-2">
+                                <button
+                                    className="text-blue-500"
+                                    onClick={() => {
+                                        const newName = prompt("Enter new category name", category.name);
+                                        if (newName) handleEdit(category.id, newName);
+                                    }}
+                                >
+                                    <FaEdit />
+                                </button>
+
+                                <button
+                                    className="text-red-500"
+                                    onClick={() => handleDelete(category.id)}
+                                >
+                                    <FaTrash />
+                                </button>
+                            </div>
+                        </div>
                     ))
                 ) : (
                     <p className="text-gray-500 text-center col-span-full">No categories available.</p>

@@ -8,7 +8,7 @@ use App\Http\Controllers\TableController;
 use App\Http\Controllers\MenuCategoryController;
 // use App\Http\Controllers\Auth\LoginController;
 
-use App\Http\Controllers\Auth\LoginController;
+//use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CrtUsers;
 // Public routes
 
@@ -31,6 +31,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/menu', fn() => Inertia::render('admin/Menu'))->name('admin.menu');
     Route::get('/menu-categories', [MenuCategoryController::class, 'index']);
     Route::post('/menu-categories', [MenuCategoryController::class, 'store']);
+    Route::put('/menu-categories/{id}', [MenuCategoryController::class, 'update']);
+    Route::delete('/menu-categories/{id}', [MenuCategoryController::class, 'destroy']);
     Route::get('/admin/users', fn() => Inertia::render('admin/Users'))->name('admin.users');
     Route::get('/admin/tables', [TableController::class, 'index'])->name('admin.tables');
     Route::post('/admin/tables', [TableController::class, 'store'])->name('admin.tables.store');
@@ -38,7 +40,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/tables/{table}', [TableController::class, 'destroy'])->name('admin.tables.destroy');
     Route::get('/admin/payments', fn() => Inertia::render('admin/Payments'))->name('admin.payments');
     Route::get('/admin/reports', fn() => Inertia::render('admin/Reports'))->name('admin.reports');
-});
+
+    // Nouvelle route pour afficher les éléments d'une catégorie
+    Route::get('/menu/{categoryId}/items', function ($categoryId) {
+        return Inertia::render('admin/Item', ['categoryId' => $categoryId]);
+    })->name('menu.items');
+    });
+
+
 
 // ✅ Waiter routes are now protected
 Route::middleware(['auth', 'role:waiter'])->group(function () {
