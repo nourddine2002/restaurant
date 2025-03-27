@@ -1,6 +1,6 @@
 import AdminLayout from "../../Layouts/AdminLayout";
 import { useState, useEffect } from "react";
-import { Inertia } from "@inertiajs/inertia"; // Inertia pour naviguer
+import { Inertia } from "@inertiajs/inertia";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Menu = () => {
@@ -99,18 +99,18 @@ const Menu = () => {
                 <p>Here you can edit and update the restaurant menu.</p>
             </div>
             <div>
-                <a href="/admin" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                <a href="/admin" className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
                     ← Back to Dashboard
                 </a>
             </div>
 
-            <div className="flex items-center space-x-2 mb-4">
+            <div className="flex items-center space-x-4 mb-2 p-8">
                 <input
                     type="text"
                     placeholder="Category Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="border px-3 py-2 rounded"
+                    className="border px-3 py-2 rounded mr-2 "
                     required
                 />
                 <button
@@ -126,8 +126,8 @@ const Menu = () => {
                     categories.map((category) => (
                         <div key={category.id} className="flex items-center justify-between bg-gray-100 shadow-md p-6 rounded-lg">
                             <button
-                                onClick={() => Inertia.visit(`/menu/${category.id}/items`)}
-                                className="text-lg font-bold hover:bg-gray-200 transition"
+                                onClick={() => Inertia.visit(`/menu/${category.id}`)} // Navigate to menu items page for specific category
+                                className="text-lg font-bold hover:bg-gray-200 transition w-full text-left"
                             >
                                 {category.name}
                             </button>

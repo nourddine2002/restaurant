@@ -70,7 +70,7 @@ const Tables = ({ tables }) => {
 
                 <form onSubmit={handleAddTable} className="flex items-center space-x-2">
                     <input
-                        type="number"
+                        type="text"
                         placeholder="New Table Number"
                         value={newTableData.table_number}
                         onChange={(e) => setNewTableData("table_number", e.target.value)}
@@ -78,7 +78,7 @@ const Tables = ({ tables }) => {
                     />
                     <button
                         type="submit"
-                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 flex items-center"
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-green-600 flex items-center"
                         disabled={addProcessing}
                     >
                         <FaPlus className="mr-1" /> Add Table
