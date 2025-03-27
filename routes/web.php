@@ -91,8 +91,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/menu-categories/{id}', [MenuCategoryController::class, 'update']);
     Route::delete('/menu-categories/{id}', [MenuCategoryController::class, 'destroy']);
     
-    Route::get('/menu/{categoryId}/items', [MenuItemController::class, 'index']);
-    Route::post('/menu/{categoryId}/items', [MenuItemController::class, 'store']);
+    // Route::get('/menu/{categoryId}/items', [MenuItemController::class, 'index']);
+    Route::post('/menu/{categoryId}', [MenuItemController::class, 'store']);
     Route::put('/menu/{categoryId}/items/{itemId}', [MenuItemController::class, 'update']);
     Route::delete('/menu/{categoryId}/items/{itemId}', [MenuItemController::class, 'destroy']);
 

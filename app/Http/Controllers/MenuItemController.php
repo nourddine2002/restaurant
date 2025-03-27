@@ -6,6 +6,7 @@ use App\Models\MenuItem;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\MenuCategory;
 
 class MenuItemController extends Controller
 {
@@ -32,7 +33,7 @@ class MenuItemController extends Controller
         }
 
         // Check if category exists
-        $category = Category::findOrFail($categoryId);
+        $category = MenuCategory::findOrFail($categoryId);
 
         // Create new menu item
         $menuItem = new MenuItem();

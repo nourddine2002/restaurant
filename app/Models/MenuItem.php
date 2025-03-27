@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\MenuCategory;
 
 class MenuItem extends Model
 {
@@ -19,6 +20,6 @@ class MenuItem extends Model
     // Relationship with Category
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(MenuCategory::class);
     }
 }
