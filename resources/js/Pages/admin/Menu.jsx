@@ -27,7 +27,13 @@ const Menu = () => {
     const fetchCategoryItems = async (categoryId) => {
         try {
             const response = await fetch(`/menu-items/${categoryId}`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
             const data = await response.json();
+            console.log("Fetched items:", data); // Add this for debugging
+
+            const itemsArray = Array.isArray(data) ? data : [];
             setCategoryItems(data);
             setSelectedCategory(categoryId);
             setIsItemModalOpen(true);
@@ -259,17 +265,17 @@ const Menu = () => {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead>
                                     <tr className="bg-gray-100">
-                                        <th className="p-2 text-left">Name</th>
-                                        <th className="p-2 text-left">Price</th>
-                                        <th className="p-2 text-left">Description</th>
+                                        <th className="p-2 text-center">Name</th>
+                                        <th className="p-2 text-center">Price</th>
+                                        <th className="p-2 text-center">Description</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {categoryItems.map((item) => (
                                         <tr key={item.id} className="border-t">
-                                            <td className="p-2">{item.name}</td>
-                                            <td className="p-2">${item.price.toFixed(2)}</td>
-                                            <td className="p-2">{item.description}</td>
+                                            <td className="p-3 font-semibold text-gray-800 text-center">{item.name}</td>
+                                            <td className="p-3 font-semibold text-gray-800 text-center">{item.price} DH</td>
+                                            <td className="p-3 font-semibold text-gray-800 text-center">{item.description}</td>
                                         </tr>
                                     ))}
                                     {categoryItems.length === 0 && (
