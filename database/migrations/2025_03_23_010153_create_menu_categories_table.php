@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('menu_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('image')->nullable(); // URL or path to the category image
+            $table->boolean('status')->default(true); // true = active, false = inactive
+            $table->string('slug')->unique();
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }

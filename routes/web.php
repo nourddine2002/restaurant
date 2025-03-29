@@ -40,10 +40,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/api/users/{id}', [CrtUsers::class, 'destroy'])->name('admin.users.destroy');
 
     // Menu Items CRUD
-    Route::get('/admin/menu/category/{id}/items', function($id) {
-    $category = MenuCategory::findOrFail($id);
+    Route::get('/admin/menu/category/{slug}/items', function($slug) {
+    $category = MenuCategory::where('slug', $slug)->firstOrFail();
     return Inertia::render('admin/ItemManagement', [
-        'categoryId' => $id,
+        'categoryId' => $category->id,
         'categoryName' => $category->name,
     ]);
     })->name('admin.menu.category.items');

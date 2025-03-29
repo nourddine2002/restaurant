@@ -54,9 +54,14 @@ const Menu = () => {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
                 },
-                body: JSON.stringify({ name }),
+                body: JSON.stringify({ name,
+                    slug: name.toLowerCase().replace(/\s+/g, "-"),
+                    description: "",
+                    image: "",
+                    status: true,
+                    order:0,
+                }),
             });
-
             if (response.ok) {
                 const newCategory = await response.json();
                 setCategories([...categories, newCategory.data]);
@@ -113,7 +118,7 @@ const Menu = () => {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
                 },
-                body: JSON.stringify({ name: categoryToEdit.name }),
+                body: JSON.stringify({ name: categoryToEdit.name}),
             });
 
             if (response.ok) {
@@ -214,7 +219,7 @@ const Menu = () => {
                                                 className="text-blue-600 hover:text-green-700"
                                                 title="View Items"
                                             >
-                                                <Link href={`/admin/menu/category/${category.id}/items`} className="text-blue-600 hover:text-green-700">
+                                                <Link href={`/admin/menu/category/${category.slug}/items`} className="text-blue-600 hover:text-green-700">
                                                 <FaPlus />
                                                 </Link>
                                             </button>

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tables', function (Blueprint $table) {
             $table->id();
             $table->integer('number')->unique();
-            //$table->enum('status', ['available', 'occupied']);
+            $table->string('status')->default('available');
             $table->timestamps();
         });
     }

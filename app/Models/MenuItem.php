@@ -13,7 +13,9 @@ class MenuItem extends Model
         'name', 
         'price', 
         'description', 
-        'category_id'
+        'category_id',
+        'availability'
+
     ];
 
     // Relationship with Category

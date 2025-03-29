@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
+            $table->boolean('availability')->default(true); // true or false
             $table->foreignId('category_id')->constrained('menu_categories');
             $table->timestamps();
+            $table->index('category_id');
         });
     }
 

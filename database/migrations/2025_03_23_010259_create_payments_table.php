@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained('orders');
             $table->decimal('amount', 10, 2);
-            $table->enum('status', ['paid', 'pending']);
+            $table->string('payment_method')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();
+            $table->index('order_id');
+
         });
     }
 

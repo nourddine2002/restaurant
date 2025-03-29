@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username')->unique();
+            $table->string('phone')->nullable();
             $table->string('password');
+            $table->string('role')->default('waiter');
             $table->rememberToken();
             $table->timestamps();
+            $table->index('role');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

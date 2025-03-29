@@ -15,8 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained('orders');
             $table->foreignId('menu_item_id')->constrained('menu_items');
-            $table->integer('quantity');
+            $table->integer('quantity')->default(1); // Default quantity is 1
+            $table->decimal('price', 8, 2); // Price of the item at the time of order   
+            $table->text('notes')->nullable(); // Special instructions for this item
             $table->timestamps();
+            $table->index('order_id');
+            $table->index('menu_item_id');
+
         });
     }
 
