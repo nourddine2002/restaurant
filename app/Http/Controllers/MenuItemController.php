@@ -3,45 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\MenuItem;
-use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\MenuCategory;
+use Illuminate\Http\Request;
 
 class MenuItemController extends Controller
 {
-    public function index($categoryId)
+    // Get items for a specific category
+    public function getItemsByCategory($categoryId)
     {
-        $menuItems = MenuItem::where('category_id', $categoryId)->get();
-        return response()->json($menuItems);
+        $items = MenuItem::where('category_id', $categoryId)->get();
+        return response()->json($items);
     }
 
-    public function store(Request $request, $categoryId)
+    // Create a new menu item
+    public function store(Request $request)
     {
-        // Validate the request
-        $validator = Validator::make($request->all(), [
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string|max:500'
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'category_id' => 'required|exists:menu_categories,id'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Check if category exists
-        $category = MenuCategory::findOrFail($categoryId);
-
-        // Create new menu item
-        $menuItem = new MenuItem();
-        $menuItem->name = $request->input('name');
-        $menuItem->price = $request->input('price');
-        $menuItem->description = $request->input('description');
-        $menuItem->category_id = $categoryId;
-        $menuItem->save();
+        $menuItem = MenuItem::create($validatedData);
 
         return response()->json([
             'message' => 'Menu item created successfully',
@@ -49,32 +33,19 @@ class MenuItemController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, $categoryId, $itemId)
+    // Update a menu item
+        public function update(Request $request, $id)
     {
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string|max:500'
+        $menuItem = MenuItem::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'category_id' => 'sometimes|exists:menu_categories,id'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Find the menu item
-        $menuItem = MenuItem::where('id', $itemId)
-            ->where('category_id', $categoryId)
-            ->firstOrFail();
-
-        // Update menu item
-        $menuItem->name = $request->input('name');
-        $menuItem->price = $request->input('price');
-        $menuItem->description = $request->input('description');
-        $menuItem->save();
+        $menuItem->update($validatedData);
 
         return response()->json([
             'message' => 'Menu item updated successfully',
@@ -82,14 +53,10 @@ class MenuItemController extends Controller
         ]);
     }
 
-    public function destroy($categoryId, $itemId)
+    // Delete a menu item
+    public function destroy($id)
     {
-        // Find the menu item
-        $menuItem = MenuItem::where('id', $itemId)
-            ->where('category_id', $categoryId)
-            ->firstOrFail();
-
-        // Delete the menu item
+        $menuItem = MenuItem::findOrFail($id);
         $menuItem->delete();
 
         return response()->json([

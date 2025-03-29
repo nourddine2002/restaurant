@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import axios from 'axios';
 import { Link } from '@inertiajs/react';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 export default function Users() {
     const [users, setUsers] = useState([]);
@@ -138,7 +139,7 @@ export default function Users() {
                 </div>
             )}
 
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-8">
                     <h2 className="text-2xl font-bold text-gray-800">Waiters Management</h2>
                     <div className="flex space-x-3">
                         <Link
@@ -282,7 +283,7 @@ export default function Users() {
                                                 onClick={() => setEditingUser({ ...user })}
                                                 className="text-blue-600 hover:text-blue-900 font-medium mr-3"
                                             >
-                                                Update
+                                            <FaEdit/>
                                             </button>
 
                                             <button
@@ -292,7 +293,7 @@ export default function Users() {
                                                 }}
                                                 className="text-red-600 hover:text-red-900 font-medium mr-3"
                                             >
-                                                Delete
+                                                <FaTrash/>
                                             </button>
                                 
                                         </td>

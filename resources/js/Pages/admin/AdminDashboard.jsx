@@ -1,6 +1,8 @@
 import AdminLayout from '../../Layouts/AdminLayout';
 import { Link } from '@inertiajs/react';
-import NavLink from '@/Components/NavLink';
+import { MdTableBar } from 'react-icons/md';
+
+
 const AdminDashboard = () => {
     return (
         <AdminLayout>
@@ -49,7 +51,7 @@ const AdminDashboard = () => {
                     {/* Manage Tables */}
                     <div className="p-4 bg-white shadow-md rounded-lg">
                         <div className="flex items-center mb-2">
-                            <span className="text-2xl mr-2" role="img" aria-label="Tables">🪑</span>
+                            <span className="text-2xl mr-2" role="img" aria-label="Tables"><MdTableBar/></span>
                             <h2 className="text-xl font-semibold">Tables</h2>
                         </div>
                         <p>Manage restaurant seating and reservations.</p>
