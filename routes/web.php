@@ -96,7 +96,7 @@ Route::prefix('/api/orders')->group(function () {
 Route::post('/', [OrderController::class, 'store'])->name('orders.store');
 })->middleware('auth');
 
-    
+    d
 
 
 /*
