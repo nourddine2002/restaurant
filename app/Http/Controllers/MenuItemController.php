@@ -14,6 +14,12 @@ class MenuItemController extends Controller
         $items = MenuItem::where('category_id', $categoryId)->get();
         return response()->json($items);
     }
+    // Get all menu items
+    public function index()
+    {
+        $menuItems = MenuItem::with('category')->get();
+        return response()->json($menuItems);
+    }
 
     // Create a new menu item
     public function store(Request $request)

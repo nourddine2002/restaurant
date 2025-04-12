@@ -17,7 +17,7 @@ const WaiterDashboard = () => {
                             </div>
                             <p className="text-gray-600">Create a new order and assign it to a table.</p>
                         </div>
-                        <Link href="/waiter/new-order" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-center">
+                        <Link href="/waiter/create-order" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-center">
                             Take Order
                         </Link>
                     </div>

@@ -41,12 +41,12 @@ class AuthenticatedSessionController extends Controller
         ]);
     
         if (Auth::user()->role === 'admin') {
-            return redirect()->intended('/admin');
+            return redirect()->intended('/admin/orders/create');
         } elseif (Auth::user()->role === 'waiter') {
-            return redirect()->intended('/waiter');
+            return redirect()->intended('/waiter/create-order');
         }
 
-        return redirect()->intended('/');
+        return redirect()->intended('/login');
 
     }
 
@@ -61,7 +61,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
     public function username()
 {

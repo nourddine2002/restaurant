@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['table_id', 'user_id', 'status'];
+    protected $fillable = ['table_id', 'user_id','total_amount', 'status'];
     public function table() {
         return $this->belongsTo(Table::class);
     }

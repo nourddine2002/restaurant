@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { usePage,Link } from '@inertiajs/react';
 import axios from 'axios';
-import WaiterLayout from '../../Layouts/WaiterLayout';
+import AdminLayout from "../../Layouts/AdminLayout";
 
 export default function OrderSystem() {
   const { tables, menuItems, menuCategories, auth } = usePage().props;
@@ -113,7 +113,11 @@ export default function OrderSystem() {
     setShowOrderPreview(false);
   };
 
-  
+  const disconnect = () => {
+    // Handle logout/disconnect functionality
+    window.location.href = '/logout'; // Adjust to your actual logout route
+  };
+
   // Implementation for "AFFICHE" button - Show order preview/summary
   const showOrderSummary = () => {
     setScreen('orderSummary');
@@ -220,9 +224,7 @@ export default function OrderSystem() {
           Prix : {totalAmount.toFixed(2)}DH
         </div>
       )}
- 
-
-
+      
     </div>
   );
 
@@ -265,7 +267,7 @@ export default function OrderSystem() {
         </div>
       )}
       
-      <div className="fixed bottom-0 left-0 right-0 flex p-2 bg-white shadow-200">
+      <div className="fixed bottom-0 left-0 right-0 flex p-2 bg-gray-200">
         <button 
           onClick={showOrderSummary}
           className="flex-1 bg-blue-500 py-2 rounded-md mr-1"
@@ -328,46 +330,23 @@ export default function OrderSystem() {
   
       {order.items.length === 0 ? (
         <>
-          <p className="text-gray-500">No items in order</p>
-          <button
-            onClick={() => setScreen('items')}
-            className="bg-gray-300 px-3 py-1 rounded"
-          >
-            Back
-          </button>
-        </>
+        <p className="text-gray-500">No items in order</p>
+        <button
+              onClick={() => setScreen('items')}
+              className="bg-gray-300 px-3 py-1 rounded"
+            >
+              Back
+            </button>
+            </>
       ) : (
         <>
           {order.items.map((item, index) => (
-            <div key={index} className="flex justify-between items-center py-1 border-b">
-              <div className="flex items-center space-x-2">
+            <div key={index} className="flex justify-between py-1 border-b">
+              <div>
                 <span className="font-medium">{item.name}</span>
-                <input
-                  type="number"
-                  min="1"
-                  value={item.quantity}
-                  onChange={(e) => {
-                    const updatedItems = [...order.items];
-                    updatedItems[index].quantity = parseInt(e.target.value) || 1;
-                    setOrder({ ...order, items: updatedItems });
-                  }}
-                  className="w-16 text-center border rounded px-1 py-0.5"
-                />
+                <span className="text-gray-600 ml-2">x{item.quantity}</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <span>{(item.price * item.quantity).toFixed(2)}DH</span>
-                <button
-                  onClick={() => {
-                    const updatedItems = [...order.items];
-                    updatedItems.splice(index, 1);
-                    setOrder({ ...order, items: updatedItems });
-                  }}
-                  className="text-red-500 hover:text-red-700 text-sm"
-                  title="Remove item"
-                >
-                  ❌
-                </button>
-              </div>
+              <div>{(item.price * item.quantity).toFixed(2)}DH</div>
             </div>
           ))}
   
@@ -377,13 +356,13 @@ export default function OrderSystem() {
           </div>
   
           <div className="mt-4 flex space-x-2">
-            <button
+            <button 
               onClick={() => setScreen('items')}
               className="bg-gray-300 px-3 py-1 rounded"
             >
               Back
             </button>
-            <button
+            <button 
               onClick={handleSubmit}
               className="bg-blue-600 text-white px-3 py-1 rounded"
             >
@@ -395,24 +374,23 @@ export default function OrderSystem() {
     </div>
   );
   
-  
-  
 
   // Main render
   return (
-    <WaiterLayout>
+    <AdminLayout>
       <div className="flex justify-between items-center mb-4">
   <div className="text-xl font-bold text-gray-800">
     Server: <span className="text-blue-600">{auth.user.username}</span>
   </div>
-  {/* <Link href="/waiter/create-order" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-    ← Back to Menu
+  {/* <Link href="/admin" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+    ← Back to Dashboard
   </Link> */}
   <button 
-    onClick={showTables} 
-    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-    🍽️ TABLES
-  </button>
+          onClick={showTables} 
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          🍽️ TABLES
+        </button>
 </div>
     <div className="p-4 bg-gray-100 min-h-screen">
       {error && (
@@ -427,6 +405,6 @@ export default function OrderSystem() {
       {screen === 'orderSummary' && renderOrderSummary()}
 
     </div>
-    </WaiterLayout>
+    </AdminLayout>
   );
 }

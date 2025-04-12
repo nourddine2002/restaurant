@@ -6,6 +6,7 @@ use App\Models\Table;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Log;
 
 class TableController extends Controller
 {
@@ -15,10 +16,13 @@ class TableController extends Controller
     public function index(): Response
     {
         $tables = Table::all(); // Fetch all tables
+        // Log the tables for debugging
+        Log::info('Fetched tables:', $tables->toArray());
 
         return Inertia::render('admin/Tables', [
-            'tables' => $tables,
+        'tables' => $tables,
         ]);
+
     }
 
     /**
@@ -65,4 +69,10 @@ class TableController extends Controller
         $table->delete();
         return redirect()->route('admin.tables');
     }
+    public function getTablesByStatus(Request $request)
+    {
+        $status = $request->query('status') ?? 'available'; // Default to "available"
+        return Table::where('status', $status)->get();
+    
+}
 }

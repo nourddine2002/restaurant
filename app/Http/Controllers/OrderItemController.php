@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
@@ -8,58 +7,73 @@ use Illuminate\Http\Request;
 class OrderItemController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store a new order item.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'menu_item_id' => 'required|exists:menu_items,id',
+            'quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string',
+        ]);
+
+        $menuItem = MenuItem::findOrFail($validated['menu_item_id']);
+        $orderItem = OrderItem::create([
+            'order_id' => $validated['order_id'],
+            'menu_item_id' => $validated['menu_item_id'],
+            'quantity' => $validated['quantity'],
+            'price' => $menuItem->price,
+            'notes' => $validated['notes'],
+        ]);
+
+        // Update the total amount of the order
+        $order = Order::findOrFail($validated['order_id']);
+        $order->update([
+            'total_amount' => $order->orderItems()->sum(DB::raw('quantity * price')),
+        ]);
+
+        return response()->json($orderItem, 201);
     }
 
     /**
-     * Display the specified resource.
+     * Update an existing order item.
      */
-    public function show(OrderItem $orderItem)
+    public function update(Request $request, $id)
     {
-        //
+        $orderItem = OrderItem::findOrFail($id);
+
+        $validated = $request->validate([
+            'quantity' => 'nullable|integer|min:1',
+            'notes' => 'nullable|string',
+        ]);
+
+        $orderItem->update($validated);
+
+        // Recalculate the total amount of the order
+        $order = $orderItem->order;
+        $order->update([
+            'total_amount' => $order->orderItems()->sum(DB::raw('quantity * price')),
+        ]);
+
+        return response()->json($orderItem);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Remove an order item.
      */
-    public function edit(OrderItem $orderItem)
+    public function destroy($id)
     {
-        //
-    }
+        $orderItem = OrderItem::findOrFail($id);
+        $order = $orderItem->order;
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, OrderItem $orderItem)
-    {
-        //
-    }
+        $orderItem->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(OrderItem $orderItem)
-    {
-        //
+        // Recalculate the total amount of the order
+        $order->update([
+            'total_amount' => $order->orderItems()->sum(DB::raw('quantity * price')),
+        ]);
+
+        return response()->json(['message' => 'Order item deleted successfully']);
     }
 }

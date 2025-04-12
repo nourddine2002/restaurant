@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Table extends Model
 {
     use HasFactory;
-    protected $fillable = ['number', 'status'];
+    protected $fillable = ['number', 'capacity','status'];
     public function orders() {
         return $this->hasMany(Order::class);
     }
+    
 }
