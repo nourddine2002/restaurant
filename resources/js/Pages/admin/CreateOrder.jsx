@@ -330,23 +330,46 @@ export default function OrderSystem() {
   
       {order.items.length === 0 ? (
         <>
-        <p className="text-gray-500">No items in order</p>
-        <button
-              onClick={() => setScreen('items')}
-              className="bg-gray-300 px-3 py-1 rounded"
-            >
-              Back
-            </button>
-            </>
+          <p className="text-gray-500">No items in order</p>
+          <button
+            onClick={() => setScreen('items')}
+            className="bg-gray-300 px-3 py-1 rounded"
+          >
+            Back
+          </button>
+        </>
       ) : (
         <>
           {order.items.map((item, index) => (
-            <div key={index} className="flex justify-between py-1 border-b">
-              <div>
+            <div key={index} className="flex justify-between items-center py-1 border-b">
+              <div className="flex items-center space-x-2">
                 <span className="font-medium">{item.name}</span>
-                <span className="text-gray-600 ml-2">x{item.quantity}</span>
+                <input
+                  type="number"
+                  min="1"
+                  value={item.quantity}
+                  onChange={(e) => {
+                    const updatedItems = [...order.items];
+                    updatedItems[index].quantity = parseInt(e.target.value) || 1;
+                    setOrder({ ...order, items: updatedItems });
+                  }}
+                  className="w-16 text-center border border-gray-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none"
+                />
               </div>
-              <div>{(item.price * item.quantity).toFixed(2)}DH</div>
+              <div className="flex items-center space-x-2">
+                <span>{(item.price * item.quantity).toFixed(2)}DH</span>
+                <button
+                  onClick={() => {
+                    const updatedItems = [...order.items];
+                    updatedItems.splice(index, 1);
+                    setOrder({ ...order, items: updatedItems });
+                  }}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                  title="Remove item"
+                >
+                  ❌
+                </button>
+              </div>
             </div>
           ))}
   
@@ -356,13 +379,13 @@ export default function OrderSystem() {
           </div>
   
           <div className="mt-4 flex space-x-2">
-            <button 
+            <button
               onClick={() => setScreen('items')}
               className="bg-gray-300 px-3 py-1 rounded"
             >
               Back
             </button>
-            <button 
+            <button
               onClick={handleSubmit}
               className="bg-blue-600 text-white px-3 py-1 rounded"
             >
@@ -374,7 +397,6 @@ export default function OrderSystem() {
     </div>
   );
   
-
   // Main render
   return (
     <AdminLayout>
