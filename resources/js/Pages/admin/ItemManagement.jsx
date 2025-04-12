@@ -100,36 +100,42 @@ const ItemManagement = () => {
             setIsAddFormVisible(false); // Hide add form if visible
         }
     };
-    const handleUpdateItem = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch(`/menu-items/${editItemId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                },
-                body: JSON.stringify({
-                    name: editItemName,
-                    price: parseFloat(editItemPrice),
-                    description: editItemDescription,
-                    category_id: categoryId,
-                }),
-            });
-            
-            if (response.ok) {
-                const updatedItem = await response.json();
-                setItems(items.map((item) => 
-                    item.id === editItemId ? updatedItem.data : item
-                ));
-                setIsEditFormVisible(false);
-                setEditItemId(null);
-            }
-        } catch (error) {
-            console.error(error);
-            setError("An error occurred while updating the item.");
+    // In the handleUpdateItem function, the issue is in how you're processing the updated item
+const handleUpdateItem = async (e) => {
+    e.preventDefault();
+    try {
+        const response = await fetch(`/menu-items/${editItemId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({
+                name: editItemName,
+                price: parseFloat(editItemPrice),
+                description: editItemDescription,
+                category_id: categoryId,
+            }),
+        });
+
+        if (response.ok) {
+            const updatedItemResponse = await response.json();
+            // Fix: Make sure we're correctly accessing the updated item data
+            const updatedItem = updatedItemResponse.data || updatedItemResponse;
+
+            // Fix: Update the items array by replacing the old item with the updated one
+            setItems(items.map((item) =>
+                item.id === editItemId ? updatedItem : item
+            ));
+
+            setIsEditFormVisible(false);
+            setEditItemId(null);
         }
-    };
+    } catch (error) {
+        console.error(error);
+        setError("An error occurred while updating the item.");
+    }
+};
 
     return (
         <AdminLayout>
