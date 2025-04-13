@@ -16,6 +16,7 @@ export default function OrderSystem() {
   const [screen, setScreen] = useState('categories'); // 'categories', 'items', 'tables', 'orderSummary'
   const [error, setError] = useState(null);
   const [showOrderPreview, setShowOrderPreview] = useState(false);
+  const [previousScreen, setPreviousScreen] = useState('null'); // Track previous screen for back navigation
 
   // Get filtered menu items based on selected category
   const filteredMenuItems = selectedCategory 
@@ -76,6 +77,7 @@ export default function OrderSystem() {
   };
 
   const showTables = () => {
+    setPreviousScreen(screen); // Store the current screen before switching
     setScreen('tables');
   };
 
@@ -106,6 +108,7 @@ export default function OrderSystem() {
   const selectTable = (tableId) => {
     setOrder({ ...order, table_id: tableId });
     setScreen('categories');
+    setScreen(previousScreen || 'categories');
   };
 
   const backToCategories = () => {
@@ -401,9 +404,14 @@ export default function OrderSystem() {
   // Main render
   return (
     <WaiterLayout>
-      <div className="flex justify-between items-center mb-4">
+  <div className="flex justify-between items-center mb-4">
   <div className="text-xl font-bold text-gray-800">
     Server: <span className="text-blue-600">{auth.user.username}</span>
+  </div>
+  <div className="text-xl font-bold text-gray-800">
+    Tabel: <span className="text-blue-600">{tables.filter(table => table.id === order.table_id)
+      .map(table => table.number)
+        .join(', ')}</span>
   </div>
   {/* <Link href="/waiter/create-order" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
     ← Back to Menu

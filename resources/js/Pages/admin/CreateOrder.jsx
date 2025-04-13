@@ -16,6 +16,8 @@ export default function OrderSystem() {
   const [screen, setScreen] = useState('categories'); // 'categories', 'items', 'tables', 'orderSummary'
   const [error, setError] = useState(null);
   const [showOrderPreview, setShowOrderPreview] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [previousScreen, setPreviousScreen] = useState('null'); // Track previous screen for back navigation
 
   // Get filtered menu items based on selected category
   const filteredMenuItems = selectedCategory 
@@ -76,7 +78,9 @@ export default function OrderSystem() {
   };
 
   const showTables = () => {
+    setPreviousScreen(screen);
     setScreen('tables');
+
   };
 
   const handleSubmit = async () => {
@@ -105,7 +109,7 @@ export default function OrderSystem() {
 
   const selectTable = (tableId) => {
     setOrder({ ...order, table_id: tableId });
-    setScreen('categories');
+    setScreen(previousScreen || 'categories');
   };
 
   const backToCategories = () => {
@@ -113,16 +117,20 @@ export default function OrderSystem() {
     setShowOrderPreview(false);
   };
 
-  const disconnect = () => {
-    // Handle logout/disconnect functionality
-    window.location.href = '/logout'; // Adjust to your actual logout route
-  };
-
   // Implementation for "AFFICHE" button - Show order preview/summary
   const showOrderSummary = () => {
     setScreen('orderSummary');
   };
 
+  const cancelOrder = () => {
+    if (confirm("Are you sure you want to cancel this order?")) {
+      setOrder({
+        table_id: null,
+        items: [],
+      });
+      setScreen('categories'); // or your starting screen
+    }
+  };
   
 
   // Implementation for "+" button - Add a custom item or note
@@ -150,7 +158,7 @@ export default function OrderSystem() {
 
   // Render functions
   const renderCategories = () => (
-    <div className="pt-0">
+    <div className="pt-4">
     
       {showOrderPreview ? (
         <div className="bg-white p-4 rounded-lg shadow-md mb-4">
@@ -220,9 +228,22 @@ export default function OrderSystem() {
       )}
       
       {order.items.length > 0 && !showOrderPreview && (
-        <div className="fixed bottom-20 left-0 right-0 bg-blue-500 py-2 text-center">
+        <>
+        {/* Cancel Button */}
+        <div className="fixed top-32  right-44 flex justify-center z-40">
+          <button
+            onClick={() => setShowCancelModal(true)}
+            className="bg-red-600 text-white text-lg px-2 py-2 rounded-full shadow-md hover:bg-red-700 transition"
+          >
+          ❌ 
+          </button>
+        </div>
+      
+        {/* Total Price Bar */}
+        <div className="fixed top-40 p-2 right-4 bg-blue-700 bg-opacity-90 py-3 text-center text-white font-semibold text-lg z-30 shadow-inner">
           Prix : {totalAmount.toFixed(2)}DH
         </div>
+      </>
       )}
       
     </div>
@@ -262,9 +283,24 @@ export default function OrderSystem() {
       </div>
       
       {order.items.length > 0 && (
-        <div className="fixed bottom-20 left-0 right-0 bg-blue-500 bg-opacity-60   py-2 text-center">
-          Prix : {totalAmount.toFixed(2)}DH
-        </div>
+       <>
+       {/* Cancel Button */}
+       <div className="fixed top-32  right-44 flex justify-center z-40">
+         <button
+           onClick={() => setShowCancelModal(true)}
+           className="bg-red-600 text-white text-lg px-2 py-2 rounded-full shadow-md hover:bg-red-700 transition"
+         >
+          ❌
+         </button>
+       </div>
+     
+       {/* Total Price Bar */}
+       <div className="fixed top-40 p-2 right-4 bg-blue-700 bg-opacity-90 py-3 text-center text-white font-semibold text-lg z-30 shadow-inner">
+         Prix : {totalAmount.toFixed(2)}DH
+       </div>
+     </>
+     
+      
       )}
       
       <div className="fixed bottom-0 left-0 right-0 flex p-2 bg-gray-200">
@@ -319,6 +355,8 @@ export default function OrderSystem() {
       </div>
     </div>
   );
+ 
+  
   const renderOrderSummary = () => (
     <div className="p-4 pb-16">
       <h2 className="text-xl font-bold mb-4">Order Summary</h2>
@@ -403,7 +441,14 @@ export default function OrderSystem() {
       <div className="flex justify-between items-center mb-4">
   <div className="text-xl font-bold text-gray-800">
     Server: <span className="text-blue-600">{auth.user.username}</span>
+    </div>
+    <div className="text-xl font-bold text-gray-800">
+    Tabel: <span className="text-blue-600">{tables.filter(table => table.id === order.table_id)
+        .map(table => table.number)
+        .join(', ')}</span>
+        
   </div>
+  
   {/* <Link href="/admin" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
     ← Back to Dashboard
   </Link> */}
@@ -425,6 +470,34 @@ export default function OrderSystem() {
       {screen === 'items' && renderItems()}
       {screen === 'tables' && renderTables()}
       {screen === 'orderSummary' && renderOrderSummary()}
+      
+      {showCancelModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded shadow-md text-center max-w-sm w-full">
+      <h2 className="text-lg font-semibold mb-4">Cancel Order</h2>
+      <p className="text-gray-700 mb-6">Are you sure you want to cancel this order?</p>
+      <div className="flex justify-center space-x-4">
+        <button
+          onClick={() => {
+            setOrder({ items: [] });
+            setScreen('categories'); 
+            setShowCancelModal(false);
+          }}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Yes, Cancel
+        </button>
+        <button
+          onClick={() => setShowCancelModal(false)}
+          className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          No, Go Back
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
     </div>
     </AdminLayout>
