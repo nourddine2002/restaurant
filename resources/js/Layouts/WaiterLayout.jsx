@@ -20,7 +20,7 @@ const WaiterLayout = ({ children }) => {
                             <Dropdown.Link href="/waiter" className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
                                 Dashboard
                             </Dropdown.Link>
-                            <Dropdown.Link href="/waiter/orders" className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                            <Dropdown.Link href="/waiter/active-orders" className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
                                 My Orders
                             </Dropdown.Link>
                             <Dropdown.Link href="/waiter/create-order" className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">

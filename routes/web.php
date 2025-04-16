@@ -83,20 +83,27 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Orders
 
     Route::get('/admin/orders/create', [OrderController::class, 'create']);
+    
+
     Route::prefix('/api/orders')->group(function () {
     Route::get('/{id}', [OrderController::class, 'show']);
     Route::put('/{id}', [OrderController::class, 'update']);
     Route::get('/', [OrderController::class, 'index']);
     Route::put('/{id}/status', [OrderController::class, 'updateStatus']);
-});
-    
+    Route::post('/{id}/add-items', [OrderController::class, 'addToOrder'])->name('orders.add-items');
+
 });
 
+
+});
 Route::prefix('/api/orders')->group(function () {
 Route::post('/', [OrderController::class, 'store'])->name('orders.store');
 })->middleware('auth');
 
-    
+Route::middleware(['auth'])->group(function () {
+    Route::get('admin/my-orders', [OrderController::class, 'myOrders'])->name('my.orders');
+
+});
 
 
 /*
@@ -106,10 +113,13 @@ Route::post('/', [OrderController::class, 'store'])->name('orders.store');
 */
 Route::middleware(['auth', 'role:waiter'])->group(function () {
     Route::get('/waiter', fn() => Inertia::render('Waiter/WaiterDashboard'))->name('waiter.dashboard');
-    Route::get('/waiter/orders', fn() => Inertia::render('Waiter/Orders'))->name('waiter.orders');
+    Route::get('/waiter/active-orders', [OrderController::class, 'myOrders'])->name('waiter.active-order');
+
+
     Route::get('/waiter/create-order', fn() => Inertia::render('Waiter/NewOrder'))->name('waiter.new-order');
-    Route::get('/waiter/completed-orders', fn() => Inertia::render('Waiter/OrderHistory'))->name('waiter.completed-orders');
+    Route::get('/waiter/orders-history', fn() => Inertia::render('Waiter/OrderHistory'))->name('waiter.completed-orders');
     Route::get('/waiter/create-order', [OrderController::class, 'waitercreate']);
+
 
 
 });

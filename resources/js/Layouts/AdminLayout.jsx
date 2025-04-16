@@ -23,40 +23,52 @@ const AdminLayout = ({ children }) => {
                                 Dashboard
                             </Dropdown.Link>
                             <Dropdown.Link 
+                                href="/admin/orders/create"
+                                className="block w-full text-left px-4 py-2 text-black-600 hover:bg-gray-100"
+                            >
+                                Create Order
+                            </Dropdown.Link>
+                            <Dropdown.Link 
+                                href="/admin/my-orders"
+                                className="block w-full text-left px-4 py-2 text-black-600 hover:bg-gray-100"
+                            >
+                                My Orders
+                            </Dropdown.Link>
+                            <Dropdown.Link 
                                 href="/admin/orders"
                                 className="block w-full text-left px-4 py-2 text-black-600 hover:bg-gray-100"
                             >
-                                Orders
+                                Manage Orders
                             </Dropdown.Link>
                             <Dropdown.Link 
                                 href="/admin/users"
                                 className="block w-full text-left px-4 py-2 text-black-600 hover:bg-gray-100"
                             >
-                                Users
+                                Manage Users
                             </Dropdown.Link>
                             <Dropdown.Link 
                                 href="/admin/menu"
                                 className="block w-full text-left px-4 py-2 text-black-600 hover:bg-gray-100"
                             >
-                                Menu
+                                Manage Menu
                             </Dropdown.Link>
                             <Dropdown.Link 
                                 href="/admin/reports"
                                 className="block w-full text-left px-4 py-2 text-black-600 hover:bg-gray-100"
                             >
-                                Reports
+                                Manage Reports
                             </Dropdown.Link>
                             <Dropdown.Link 
                                 href="/admin/tables"
                                 className="block w-full text-left px-4 py-2 text-black-600 hover:bg-gray-100"
                             >
-                                Tables
+                                Manage Tables
                             </Dropdown.Link>
                             <Dropdown.Link 
                                 href="/admin/payments"
                                 className="block w-full text-left px-4 py-2 text-black-600 hover:bg-gray-100"
                             >
-                                Payments
+                                Manage Payments
                             </Dropdown.Link>
                             <Dropdown.Link 
                                 href={route('logout')} 

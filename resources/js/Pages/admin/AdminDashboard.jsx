@@ -18,6 +18,14 @@ const AdminDashboard = () => {
                         <p>View and manage restaurant orders.</p>
                         <Link href="/admin/orders" className="text-blue-500 hover:underline">Manage Orders</Link>
                     </div>
+                    <div className="p-4 bg-white shadow-md rounded-lg">
+                        <div className="flex items-center mb-2">
+                            <span className="text-2xl mr-2" role="img" aria-label="Orders">📋</span>
+                            <h2 className="text-xl font-semibold">MyOrders</h2>
+                        </div>
+                        <p>View My active orders.</p>
+                        <Link href="/admin/my-orders" className="text-blue-500 hover:underline">Manage Orders</Link>
+                    </div>
                     {/* Manage Users */}
                     <div className="p-4 bg-white shadow-md rounded-lg">
                         <div className="flex items-center mb-2">

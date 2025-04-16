@@ -5,7 +5,6 @@ import WaiterLayout from '../../Layouts/WaiterLayout';
 
 export default function OrderSystem() {
   const { tables, menuItems, menuCategories, auth } = usePage().props;
-
   // State
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [order, setOrder] = useState({
@@ -345,25 +344,27 @@ export default function OrderSystem() {
             <div key={index} className="flex justify-between items-center py-1 border-b">
               <div className="flex items-center space-x-2">
                 <span className="font-medium">{item.name}</span>
-                <input
-                  type="number"
-                  min="1"
-                  value={item.quantity}
-                  onChange={(e) => {
-                    const updatedItems = [...order.items];
-                    updatedItems[index].quantity = parseInt(e.target.value) || 1;
-                    setOrder({ ...order, items: updatedItems });
-                  }}
-                  className="w-16 text-center border rounded px-1 py-0.5"
-                />
+                <div className="flex items-center border rounded">
+                        <button 
+                        onClick={() => updateQuantity(index, -1)}
+                        className="px-2 py-0 border-r"
+                        >
+                        -
+                        </button>
+                        <span className="px-2">{item.quantity}</span>
+                        <button 
+                        onClick={() => updateQuantity(index, 1)}
+                        className="px-2 py-0 border-l"
+                        >
+                        +
+                        </button>
+                    </div>
               </div>
               <div className="flex items-center space-x-2">
                 <span>{(item.price * item.quantity).toFixed(2)}DH</span>
                 <button
                   onClick={() => {
-                    const updatedItems = [...order.items];
-                    updatedItems.splice(index, 1);
-                    setOrder({ ...order, items: updatedItems });
+                    removeItem(index);
                   }}
                   className="text-red-500 hover:text-red-700 text-sm"
                   title="Remove item"
