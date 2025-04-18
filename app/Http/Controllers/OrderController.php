@@ -136,7 +136,7 @@ public function store(Request $request)
 {
     // Validate the incoming request data
     $validated = $request->validate([
-        'table_id' => 'required|exists:tables,id',
+        'table_id' => 'nullable|exists:tables,id',
         'notes' => 'nullable|string',
         'items' => 'required|array|min:1',
         'items.*.menu_item_id' => 'required|exists:menu_items,id',

@@ -20,8 +20,8 @@ const AdminDashboard = () => {
                     </div>
                     <div className="p-4 bg-white shadow-md rounded-lg">
                         <div className="flex items-center mb-2">
-                            <span className="text-2xl mr-2" role="img" aria-label="Orders">📋</span>
-                            <h2 className="text-xl font-semibold">MyOrders</h2>
+                            <span className="text-2xl mr-2" role="img" aria-label="Orders"> 📜</span>
+                            <h2 className="text-xl font-semibold">My Orders</h2>
                         </div>
                         <p>View My active orders.</p>
                         <Link href="/admin/my-orders" className="text-blue-500 hover:underline">Manage Orders</Link>
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
                     <div className="p-4 bg-white shadow-md rounded-lg">
                         <div className="flex items-center mb-2">
                             <span className="text-2xl mr-2" role="img" aria-label="Users">👥</span>
-                            <h2 className="text-xl font-semibold">Users</h2>
+                            <h2 className="text-xl font-semibold">Waiters</h2>
                         </div>
                         <p>View and manage staff and waiters.</p>
                         <Link href="/admin/users" className="text-blue-500 hover:underline">Manage Users</Link>
@@ -40,7 +40,7 @@ const AdminDashboard = () => {
                     <div className="p-4 bg-white shadow-md rounded-lg">
                         <div className="flex items-center mb-2">
                             <span className="text-2xl mr-2" role="img" aria-label="Menu">🍽️</span>
-                            <h2 className="text-xl font-semibold">Menu Items</h2>
+                            <h2 className="text-xl font-semibold">Menu</h2>
                         </div>
                         <p>Edit and update the restaurant menu.</p>
                         <Link href="/admin/menu" className="text-blue-500 hover:underline">Manage Menu</Link>
