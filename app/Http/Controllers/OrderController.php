@@ -71,7 +71,7 @@ class OrderController extends Controller
         $tables = Table::where('status', 'available')->get();
         $menuItems = MenuItem::all();
         $menuCategories = MenuCategory::all();
-        
+
         // Format image paths for categories
         foreach ($menuCategories as $category) {
             if ($category->image) {
@@ -81,7 +81,7 @@ class OrderController extends Controller
                 }
             }
         }
-        
+
         // Format image paths for menu items if needed
         foreach ($menuItems as $item) {
             if (isset($item->image)) {
@@ -90,7 +90,7 @@ class OrderController extends Controller
                 }
             }
         }
-        
+
         return Inertia::render('admin/CreateOrder', [
             'tables' => $tables,
             'menuItems' => $menuItems,
@@ -103,7 +103,7 @@ class OrderController extends Controller
         $tables = Table::where('status', 'available')->get();
         $menuItems = MenuItem::all();
         $menuCategories = MenuCategory::all();
-        
+
         // Format image paths for categories
         foreach ($menuCategories as $category) {
             if ($category->image) {
@@ -113,7 +113,7 @@ class OrderController extends Controller
                 }
             }
         }
-        
+
         // Format image paths for menu items if needed
         foreach ($menuItems as $item) {
             if (isset($item->image)) {
@@ -122,7 +122,7 @@ class OrderController extends Controller
                 }
             }
         }
-        
+
         return Inertia::render('Waiter/NewOrder', [
             'tables' => $tables,
             'menuItems' => $menuItems,
@@ -131,7 +131,7 @@ class OrderController extends Controller
 
     }
 
-    
+
 public function store(Request $request)
 {
     // Validate the incoming request data
@@ -194,7 +194,7 @@ public function myOrders()
     $tables = Table::all();
     $menuItems = MenuItem::all();
     $menuCategories = MenuCategory::all();
-    
+
     // Format image paths for categories
     foreach ($menuCategories as $category) {
         if ($category->image) {
@@ -203,7 +203,7 @@ public function myOrders()
             }
         }
     }
-    
+
     // Format image paths for menu items
     foreach ($menuItems as $item) {
         if (isset($item->image)) {
@@ -212,7 +212,7 @@ public function myOrders()
             }
         }
     }
-    
+
     // Determine which page to render based on user role
     if (Auth::user()->hasRole('waiter')) {
         return Inertia::render('Waiter/ActiveOrders', [
@@ -245,7 +245,7 @@ public function addToOrder(Request $request, $id)
     ]);
 
     $order = Order::findOrFail($id);
-    
+
     // Check if the authenticated user owns this order
     if ($order->user_id != Auth::id()) {
         return response()->json(['error' => 'Unauthorized access to this order'], 403);
@@ -278,5 +278,14 @@ public function addToOrder(Request $request, $id)
         DB::rollBack();
         return response()->json(['error' => 'Failed to add items to order', 'details' => $e->getMessage()], 500);
     }
+}
+public function getUnpaidOrders()
+{
+    $orders = Order::with(['table', 'user', 'orderItems.menuItem'])
+        ->whereNotIn('status', ['Paid', 'Canceled'])
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return response()->json($orders);
 }
 }

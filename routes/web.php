@@ -12,6 +12,7 @@ use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\CrtUsers;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\PaymentController;
 
 // Models
 use App\Models\MenuCategory;
@@ -37,7 +38,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/orders', fn() => Inertia::render('admin/Orders'))->name('admin.orders');
     Route::get('/admin/menu', fn() => Inertia::render('admin/Menu'))->name('admin.menu');
     Route::get('/admin/users', fn() => Inertia::render('admin/Users'))->name('admin.users');
-    Route::get('/admin/payments', fn() => Inertia::render('admin/Payments'))->name('admin.payments');
     Route::get('/admin/reports', fn() => Inertia::render('admin/Reports'))->name('admin.reports');
 
     // Users CRUD
@@ -50,13 +50,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // Menu Categories
     Route::prefix('/api/menu-categories')->group(function () {
-    Route::get('/', [MenuCategoryController::class, 'index']);
-    Route::post('/', [MenuCategoryController::class, 'store']);
-    Route::put('/{id}', [MenuCategoryController::class, 'update']);
-    Route::delete('/{id}', [MenuCategoryController::class, 'destroy']);
-    Route::get('/with-items', [MenuCategoryController::class, 'getCategoriesWithItems']);
+        Route::get('/', [MenuCategoryController::class, 'index']);
+        Route::post('/', [MenuCategoryController::class, 'store']);
+        Route::put('/{id}', [MenuCategoryController::class, 'update']);
+        Route::delete('/{id}', [MenuCategoryController::class, 'destroy']);
+        Route::get('/with-items', [MenuCategoryController::class, 'getCategoriesWithItems']);
     });
-    
 
     // Menu Items
     Route::get('/admin/menu/category/{slug}/items', function ($slug) {
@@ -73,7 +72,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/menu-items/{id}', [MenuItemController::class, 'update']);
     Route::delete('/menu-items/{id}', [MenuItemController::class, 'destroy']);
 
-
     // Tables CRUD
     Route::get('/admin/tables', [TableController::class, 'index'])->name('admin.tables');
     Route::post('/admin/tables', [TableController::class, 'store'])->name('admin.tables.store');
@@ -81,30 +79,44 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/tables/{table}', [TableController::class, 'destroy'])->name('admin.tables.destroy');
 
     // Orders
-
     Route::get('/admin/orders/create', [OrderController::class, 'create']);
-    
 
     Route::prefix('/api/orders')->group(function () {
-    Route::get('/{id}', [OrderController::class, 'show']);
-    Route::put('/{id}', [OrderController::class, 'update']);
-    Route::get('/', [OrderController::class, 'index']);
-    Route::put('/{id}/status', [OrderController::class, 'updateStatus']);
-    Route::post('/{id}/add-items', [OrderController::class, 'addToOrder'])->name('orders.add-items');
+        Route::get('/', [OrderController::class, 'index']);
+        Route::get('/unpaid', [OrderController::class, 'getUnpaidOrders'])->name('orders.unpaid');
+        Route::get('/{id}', [OrderController::class, 'show']);
+        Route::put('/{id}', [OrderController::class, 'update']);
+        Route::put('/{id}/status', [OrderController::class, 'updateStatus']);
+        Route::post('/{id}/add-items', [OrderController::class, 'addToOrder'])->name('orders.add-items');
+    });
 
+    // Payment Pages (Admin Only)
+    Route::get('/admin/payments', [PaymentController::class, 'index'])->name('admin.payments');
+    Route::get('/admin/payments/{id}', [PaymentController::class, 'show'])->name('admin.payments.show');
+    Route::get('/admin/orders/{orderId}/payment', [PaymentController::class, 'create'])->name('admin.payments.create');
 });
 
-
-});
-Route::prefix('/api/orders')->group(function () {
-Route::post('/', [OrderController::class, 'store'])->name('orders.store');
-})->middleware('auth');
-
+/*
+|--------------------------------------------------------------------------
+| Shared Routes (Admin & Waiter)
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->group(function () {
+    // Orders
+    Route::post('/api/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('admin/my-orders', [OrderController::class, 'myOrders'])->name('my.orders');
 
+    // Payment API Routes (Both Admin and Waiter can process payments)
+    Route::prefix('/api/payments')->middleware(['role:admin,waiter'])->group(function () {
+        Route::get('/', [PaymentController::class, 'index'])->name('payments.index');
+        Route::post('/', [PaymentController::class, 'store'])->name('payments.store');
+        Route::get('/daily-report', [PaymentController::class, 'dailyReport'])->name('payments.daily-report');
+        Route::get('/export', [PaymentController::class, 'export'])->name('payments.export');
+        Route::get('/{id}', [PaymentController::class, 'show'])->name('payments.show');
+        Route::post('/{id}/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
+    });
 });
-
+Route::get('/api/payments/{id}/download', [PaymentController::class, 'downloadReceipt'])->name('payments.download');
 
 /*
 |--------------------------------------------------------------------------
@@ -114,15 +126,13 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:waiter'])->group(function () {
     Route::get('/waiter', fn() => Inertia::render('Waiter/WaiterDashboard'))->name('waiter.dashboard');
     Route::get('/waiter/active-orders', [OrderController::class, 'myOrders'])->name('waiter.active-order');
-
-
     Route::get('/waiter/create-order', fn() => Inertia::render('Waiter/NewOrder'))->name('waiter.new-order');
     Route::get('/waiter/orders-history', fn() => Inertia::render('Waiter/OrderHistory'))->name('waiter.completed-orders');
     Route::get('/waiter/create-order', [OrderController::class, 'waitercreate']);
 
-
-
+    // Payment processing for waiters
+    Route::get('/waiter/orders/{orderId}/payment', [PaymentController::class, 'create'])->name('waiter.payments.create');
+    Route::get('/waiter/payments/{id}', [PaymentController::class, 'show'])->name('waiter.payments.show');
 });
-
 
 require __DIR__.'/auth.php';

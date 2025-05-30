@@ -16,11 +16,11 @@ return new class extends Migration
             $table->foreignId('table_id')->constrained('tables');
             $table->foreignId('user_id')->constrained('users');
             $table->decimal('total_amount', 8, 2)->nullable(); // Allows storing amounts like 19.99
-            $table->string('status')->default('pending'); 
+            $table->string('status')->default('pending');
             $table->timestamps();
             $table->index('table_id');
             $table->index('user_id');
-            $table->index('status');x
+            $table->index('status');
         });
     }
 
