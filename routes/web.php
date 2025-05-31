@@ -13,6 +13,7 @@ use App\Http\Controllers\CrtUsers;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController; // Ajout du ReportController
 
 // Models
 use App\Models\MenuCategory;
@@ -38,7 +39,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/orders', fn() => Inertia::render('admin/Orders'))->name('admin.orders');
     Route::get('/admin/menu', fn() => Inertia::render('admin/Menu'))->name('admin.menu');
     Route::get('/admin/users', fn() => Inertia::render('admin/Users'))->name('admin.users');
-    Route::get('/admin/reports', fn() => Inertia::render('admin/Reports'))->name('admin.reports');
+
+    // Reports Routes
+    Route::get('/admin/reports', [ReportController::class, 'index'])->name('admin.reports');
+    Route::get('/admin/reports/export', [ReportController::class, 'export'])->name('admin.reports.export');
+    Route::get('/admin/diagnostic', [App\Http\Controllers\DiagnosticController::class, 'index'])->name('admin.diagnostic');
 
     // Users CRUD
     Route::prefix('/api/users')->name('admin.users.')->group(function () {
